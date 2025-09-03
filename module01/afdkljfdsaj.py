@@ -1,1 +1,2 @@
-fjsdajfkldsjalk;fsd
+def foo():
+  pass
