@@ -1,5 +1,5 @@
 # Introduction
-Description of the project
+The aim of this project was to utilize strings to extract certain pieces of information from a file. More specifically, the program parses the program to identify rare variants of a variety of diseases based on their "AF_EXAC" value. As outlined in the pseodocode below, our program parses the VSF file line by line to identify rare variants. Associated diseases are pulled from the CDLN column, and put into their own list. The end result is a returned summary of each disease obvserved to have a rare variant. 
 
 # Pseudocode
 ```
