@@ -1,0 +1,89 @@
+```
+---
+title: "Project01"
+author: "Abi McKinley and Jason Bae"
+date: "2025-09-12"
+output:
+  github_document:
+    html_preview: false
+    toc: true
+    toc_depth: 2
+---
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE)
+library('reticulate')
+use_python('/usr/bin/python3')
+```
+
+```{python}
+#!/usr/bin/env python
+from pprint import pprint
+```
+
+```{python}
+'''Function to look through one line of vcf file and identify rare variant based
+off of AF_EXAC key and list diseases associated with this variant.'''
+def parse_line(line):
+  line = line
+  diseases = []
+  variant_value = 0
+  # Filters out any unusable rows.
+  if line.startswith('#'):
+    pass
+  #Ensures line is read only if it contains 'ADF_EXAC' somewhere in the row.
+  elif 'AF_EXAC' in line:
+    # Divides row by the columns established through tab character.
+    columns = line.split('\t')
+    # Takes last column INFO and splits its contents by the semicolon character.
+    info = columns[-1].split(';')
+    # Ensures INFO content is read only if it contains 'AF_EXEC' somewhere in the row.
+    for i in info:
+        # Searching for variant value.
+        if 'AF_EXAC' in i:
+          # Convert string to float.
+          variant_value = float(i[8:])
+          # Filters out non-rare variant.
+          if variant_value >= 0.0001:
+            return diseases
+        # Searching for disease(s).
+        if 'CLNDN' in i:
+          # Splits content by vertical bar character.
+          clndn = i[6:].split('|')
+          # Reconstructs list of diseases to not include 'not_specified' and 'not_provided'.
+          diseases = list(filter(lambda dis: dis != 'not_specified' and dis != 'not_provided', clndn))
+  return diseases
+
+```
+
+```{python}
+''' Fnction to open the vcf file and return a dictionary of diseases and 
+their occurrences in rare variants.'''
+def read_file(file):
+  file = file
+  # Dictionary of diseases and their occurrences
+  dis_tally = {}
+  with open(file, 'r') as file:
+    # Iterate through line by line instead of looking at whole file.
+    for line in file:
+      # Returns list.
+      diseases = parse_line(line)
+      # Condition for if list is empty.
+      if not diseases:
+        continue
+      else:
+        for disease in diseases:
+          # If disease already exists in dictionary.
+          if disease in dis_tally:
+            dis_tally[disease] = dis_tally[disease] + 1
+          # Add disease into dictionary. 
+          else:
+            dis_tally.update({disease: 1})
+  return dis_tally
+```
+
+```{python}
+if __name__ == "__main__":
+    pprint(read_file("clinvar_20190923_short.vcf"))
+```
