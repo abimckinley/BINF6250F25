@@ -58,11 +58,10 @@ Description of the team's learning points
 Description of the stumbling blocks the team experienced
 
 # Personal Reflections
-## Group Leader
-Group leader's reflection on the project
+## Abi
 
-## Other member
-Other members' reflections on the project
+## Jason
+I thought this was a fun and appropriately challenging first project to tackle. I feel like there were way more pretty ways to filter for all of the conditions than the countless "if" statements, but I am personally too novice to think of them or know how to use them.
 
 # Generative AI Appendix
 As per the syllabus
