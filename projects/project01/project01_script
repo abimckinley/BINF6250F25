@@ -52,7 +52,9 @@ def parse_line(line):
           # Splits content by vertical bar character.
           clndn = i[6:].split('|')
           # Reconstructs list of diseases to not include 'not_specified' and 'not_provided'.
-          diseases = list(filter(lambda dis: dis != 'not_specified' and dis != 'not_provided', clndn))
+          for i in clndn:
+            if i != 'not_specified' or != 'not_provided':
+              diseases.append(i)
   return diseases
 
 ```
