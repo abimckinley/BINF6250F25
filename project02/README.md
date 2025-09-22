@@ -78,7 +78,7 @@ FUNCTION train_model_from_file(filename, order):
 
 # New function to turn text files into strings
  
-FUNCTION train_model_from_file(filename, order):
+FUNCTION train_from_file(filename, order):
     OPEN file
     READ text into string
     CLOSE file
@@ -89,7 +89,7 @@ FUNCTION train_model_from_file(filename, order):
     RETURN markov_model
 
 # Train with Dr. Seuss book
-markov_model = train_model_from_file("data/one_fish_two_fish.txt", order=2)
+markov_model = train_from_file("data/one_fish_two_fish.txt", order=2)
 PRINT generate_random_text(markov_model, seed=7)
 
 # ADD SHAKESPEARE
