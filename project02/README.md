@@ -1,8 +1,7 @@
 # Introduction
-Description of the project
+
 
 # Pseudocode
-Put pseudocode in this box:
 
 ```
 FUNCTION build_markov_model(markov_model, new_text):
@@ -92,7 +91,13 @@ FUNCTION train_from_file(filename, order):
 markov_model = train_from_file("data/one_fish_two_fish.txt", order=2)
 PRINT generate_random_text(markov_model, seed=7)
 
-# ADD SHAKESPEARE
+# Train with Shakespeare Sonnets
+sonnet_markov_model = empty dictionary
+FOR each block of text in sonnets file (separated by blank line):
+    sonnet_markov_model = build_markov_model(sonnet_markov_model, block_text, order=2)
+
+PRINT generate_random_text(sonnet_markov_model, seed=7)
+ 
 ```
 
 # Successes
