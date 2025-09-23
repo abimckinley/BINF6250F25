@@ -23,7 +23,6 @@ For our initial implementation of the Markov Model, we will use the simple examp
 import numpy as np
 ```
 
-
 ```{python}
 def build_markov_model(markov_model, new_text):
     
@@ -99,7 +98,7 @@ We will now generate a sequence of text from the Markov model. For this section,
 
 ```{python}
 def get_next_word(current_state, markov_model, seed=42):
-    
+ 
     np.random.seed(seed)  # Set seed
     
     # Get possible next words and their counts
@@ -118,7 +117,7 @@ def get_next_word(current_state, markov_model, seed=42):
 
 ```{python}
 def generate_random_text(markov_model, order=1, seed=42):
-    
+
     np.random.seed(seed)  # Fix randomness
     
     # Start from artificial start state
@@ -142,24 +141,65 @@ def generate_random_text(markov_model, order=1, seed=42):
     # Join words into a sentence
     return " ".join(output)
 ```
-# ALL THE FISH FUNCTION
+
+---
+
+## All the Fish
+
+Up till now, you have only been working with a line or two of the Dr. Seuss' _One Fish, Two Fish_. Now, I want you to build a model using the whole book and try different orders of Markov models.
+
+```{python}
+def train_from_file(filename, order=1):
+  with open(filename, 'r') as f:
+    text = f.read()
+    
+# Initialize empty model
+    markov_model = {}
+    
+    # Build the model from text
+    markov_model = build_markov_model(markov_model, text, order)
+    
+    return markov_model
+```
+
+```{python}
+
+def allthefish_model(str_start, order, seed = 7):
+
+  markov_model = {
+    '*S*': {},
+    '*E*': {}
+  }
+
+  with open('one_fish_two_fish.txt', 'r') as file:
+
+    for line in file:
+      markov_model = build_markov_model(markov_model, line, order)
+
+print (generate_random_text(markov_model, order=2, seed=7))
+```
+
+---
 
 ## Shakespeare
 
 Now, let's play around with some Shakespeare.
 
 ```{python}
-# An example of a more complex text that we can use to generate more complex output
-sonet_markov_model = train_from_file('sonnets.txt', order = 2)
-sonet = ""
-for line in file:
-    line = line.strip()
-    if line == "":
-        # Empty line so build model
-        sonet_markov_model = build_markov_model(sonet_markov_model, sonet, order=2)
-        sonet = ""
-    else:
-        sonet = sonet + ' ' + line
- 
-print (generate_random_text(sonet_markov_model,seed=7))
+sonnet_markov_model = {}
+with open("sonnets.txt", "r") as file:
+    sonnet = ""
+    for line in file:
+        line = line.strip()
+        if line == "":
+            # Empty line means one sonnet ended, build model from it
+            sonnet_markov_model = build_markov_model(sonnet_markov_model, sonnet, order=2)
+            sonnet = ""
+        else:
+            sonnet = sonnet + " " + line
+    # Handle last sonnet if file doesn’t end with blank line
+    if sonnet:
+        sonnet_markov_model = build_markov_model(sonnet_markov_model, sonnet, order=2)
+
+print(generate_random_text(sonnet_markov_model, order=2, seed=7))
 ```
