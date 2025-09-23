@@ -1,5 +1,5 @@
 # Introduction
-In this project we created functions that generate Markov models based on input text, from 1st order to Nth order, from single-line text to complex scripts. To complete this task, we built dictionaries that use "current status" as keys, and dictionaries of the frequency pairs of "next status" as values. Based on that, we implemented functions that calculate probabilities and come up with predicted "next status" from a Markov model.
+In this project we created functions that generate Markov models based on input text, from 1st order to Nth order, from single-line text to complex scripts. Markov chains are sequences of events in which the probablility of the next event depends only on the present state. In this project, our "states" were words in sentences, or sentences in a full file of text. To complete this task, we built dictionaries that use "current status" as keys, and dictionaries of the frequency pairs of "next status" as values. Based on that, we implemented functions that calculate probabilities and come up with predicted "next status" from a Markov model.
 
 # Pseudocode
 ```
@@ -100,7 +100,7 @@ PRINT generate_random_text(sonnet_markov_model, seed=7)
 ```
 
 # Successes
-We had a very productive first discussion where we mapped out the steps for each function and implemented their pseudocode. This allowed us to quickly complete the Python code later. We realized that clarifying the relationships between the functions' tasks before we started the actual programming was the key to our success.
+We had a very productive first discussion where we mapped out the steps for each function and implemented their pseudocode. This allowed us to quickly complete the Python code later. We realized that clarifying the relationships between the functions' tasks before we started the actual programming was the key to our success. 
 
 # Struggles
 We ran into a few programming errors while applying some specific Python functions, but we were able to find and fix them by carefully reviewing the code and looking up the functions' usage.
@@ -109,7 +109,7 @@ In the final function, 'Shakespeare,' we were initially confused about the purpo
 
 # Personal Reflections
 ## Group Leader - Abi
-Group leader's reflection on the project
+We wound up running into only a couple of issues, which were resolved fairly easily. Writing the pseudocode first, and almost exactly how we would write our code made the process of completing each function much smoother. We communicated well about our individual progress, and our respective knowledge in certain areas made the process of writing the code fairly seamless. If there was something that I missed when writing a specific function, Tiange was able to help me see what I was missing, and of the functions that we both worked on, our ideas were very similar!
 
 ## Other member - Tiange
 The assignment went very smoothly because Abi and I prepared our ideas before each meeting, which allowed us to make quick progress. During this process, I reviewed my knowledge of Python dictionaries. The experience of debugging the issues we ran into was especially helpful, as it made me aware of the gaps in my initial thinking.
