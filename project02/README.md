@@ -1,5 +1,5 @@
 # Introduction
-Description of the project
+In this project we created functions that generate Markov models based on input text, from 1st order to Nth order, from single-line text to complex scripts. To complete this task, we built dictionaries that use "current status" as keys, and dictionaries of the frequency pairs of "next status" as values. Based on that, we implemented functions that calculate probabilities and come up with predicted "next status" from a Markov model.
 
 # Pseudocode
 Put pseudocode in this box:
@@ -96,17 +96,20 @@ PRINT generate_random_text(markov_model, seed=7)
 ```
 
 # Successes
-Description of the team's learning points
+We had a very productive first discussion where we mapped out the steps for each function and implemented their pseudocode. This allowed us to quickly complete the Python code later. We realized that clarifying the relationships between the functions' tasks before we started the actual programming was the key to our success.
 
 # Struggles
-Description of the stumbling blocks the team experienced
+We ran into a few programming errors while applying some specific Python functions, but we were able to find and fix them by carefully reviewing the code and looking up the functions' usage.
+
+In the final function, 'Shakespeare,' we were initially confused about the purpose of the 'sonet' variable and the difference between this function and the 'all the fish' function. However, after reviewing the original text used to train the model, we realized that 'Shakespeare' trains a separate model for each paragraph separated by a blank line.
 
 # Personal Reflections
-## Group Leader
+## Group Leader - Abi
 Group leader's reflection on the project
 
-## Other member
-Other members' reflections on the project
+## Other member - Tiange
+The assignment went very smoothly because Abby and I prepared our ideas before each meeting, which allowed us to make quick progress.
+During this process, I reviewed my knowledge of Python dictionaries. The experience of debugging the issues we ran into was especially helpful, as it made me aware of the gaps in my initial thinking. 
 
 # Generative AI Appendix
-As per the syllabus
+Gemini was used to help with debugging.
