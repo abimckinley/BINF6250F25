@@ -142,3 +142,24 @@ def generate_random_text(markov_model, order=1, seed=42):
     # Join words into a sentence
     return " ".join(output)
 ```
+# ALL THE FISH FUNCTION
+
+## Shakespeare
+
+Now, let's play around with some Shakespeare.
+
+```{python}
+# An example of a more complex text that we can use to generate more complex output
+sonet_markov_model = train_from_file('sonnets.txt', order = 2)
+sonet = ""
+for line in file:
+    line = line.strip()
+    if line == "":
+        # Empty line so build model
+        sonet_markov_model = build_markov_model(sonet_markov_model, sonet, order=2)
+        sonet = ""
+    else:
+        sonet = sonet + ' ' + line
+ 
+print (generate_random_text(sonet_markov_model,seed=7))
+```
