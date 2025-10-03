@@ -46,11 +46,6 @@ FUNCTION build_debruijn_graph(input_string, k)
         >>> print(dbg.graph) #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
         defaultdict(<class 'list'>, {'thi': ['his', 'his', 'his'], 'his': ['is ', 'is ', 'is '], ...)
 '''
-For i from 0 to (length of input_string - k):
-    kmer = substring of input_string from i to i+k
-    left = first k-1 characters of kmer
-    right = last k-1 characters of kmer
-    Call add_edge(left, right)
 ```
 ```
 FUNCTION print_eulerian_walk()
