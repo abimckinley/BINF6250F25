@@ -1,1 +1,185 @@
+---
+title: "Project04"
+author: "Abi McKinley & Jason Bae"
+date: "2025-10-07"
+output:
+  github_document:
+    html_preview: false
+    toc: true
+    toc_depth: 2
+---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE)
+library('reticulate')
+reticulate::use_condaenv(condaenv = "r-reticulate")
+```
+
+```{python}
+from collections import defaultdict
+
+class DeBruijnGraph:
+    """Main class for De Bruijn graphs
+    
+    Private Attributes:
+        graph (defaultdict of lists): Edges for De Bruijn graph
+        first_node (str): starting position for traversing the graph
+    """
+    def __init__(self, input_string, k):
+        self.graph = defaultdict(list)
+        self.first.node = ''
+        self.build_debruijn_graph(input_string, k)
+
+    def add_edge(self, left, right):
+        ''' This function adds a new edge to the graph
+        
+        Args:
+            left (str): The k-1 mer for the left edge
+            right (str): The k-1 mer for the right edge
+
+        Updates graph attribute to add right to the list named left in defaultdict   
+        '''
+        self.graph[left].append(right)
+
+    def remove_edge(self, left, right):
+        ''' This function removes an edge from the graph
+        
+        Args:
+            left (str): The k-1 mer for the left edge
+            right (str): The k-1 mer for the right edge
+
+        Updates graph attribute to remove right from the list named left in defaultdict
+        '''
+        self.graph[left].remove(right)
+
+    def dfs(self, left, visited):
+        ''' Performs depth-first search (DFS) starting from node 'left', then marks that node as visited, and recursively visits all other nodes attached
+        '''
+        visited[left] = True
+        for right in self.graph[left]:
+            if not visited[right]:
+                self.dfs(right, visited)
+
+    def is_connected(self):
+        ''' Initializes a dictionary 'visited' where every node is initially unvisited, finds a node to begin with that has edges out, then runs through all nodes, and checks to ensure all nodes are visited
+        '''
+        visited = {node: False for node in self.graph}
+        start = None
+        for node in self.graph:
+            if len(self.graph[node]) > 0:
+                start = node
+                break
+        if start is None:
+            return True
+        self.dfs(start, visited)
+        for node in self.graph:
+            if len(self.graph[node]) > 0 and not visited[node]:
+                return False
+        return True
+
+    def eulerian_walk(self):
+        ''' This is a recursive function that follows all edges from a node
+        to traverse the graph
+        
+        Args: 
+            node (str): current node to traverse from
+            seed (int): seed for random selection of edge to follow
+        
+        Returns:
+            tour (list): list of k-1 mers traversed so far by the algorithm
+            Note: this will be reverse order because of recursion
+            
+        Example:
+        >>> dbg = DeBruijnGraph("this this this is a test", 4)
+        >>> dbg.eulerian_walk('thi', seed=1) #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+        ['est', ...]
+        '''
+        if not self.is_connected():
+            return False
+
+        in_degree = defaultdict(int)
+        out_degree = defaultdict(int)
+
+        for left in self.graph:
+            out_degree[left] += len(self.graph[left])
+            for right in self.graph[left]:
+                in_degree[right] += 1
+
+        start_nodes = 0
+        end_nodes = 0
+
+        for node in set(list(in_degree.keys()) + list(out_degree.keys())):
+            if out_degree[node] - in_degree[node] == 1:
+                start_nodes += 1
+            elif in_degree[node] - out_degree[node] == 1:
+                end_nodes += 1
+            elif in_degree[node] != out_degree[node]:
+                return True
+
+    def build_debruijn_graph(self, input_string, k):
+        ''' This function builds a De Buijn graph from a string
+        
+        Args:
+            input_string (str): string to use for building the graph
+            k (int): k-mer length for graph construction
+
+        Updates graph attribute to add all valid edges from the string
+        
+        Example:
+        >>> dbg = DeBruijnGraph("this this this is a test", 4)
+        >>> print(dbg.graph) #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+        defaultdict(<class 'list'>, {'thi': ['his', 'his', 'his'], 'his': ['is ', 'is ', 'is '], ...)
+        '''
+        for i in range(len(input_string) - k + 1):
+            kmer = input_string[i:i+k]
+            left = kmer[:-1]
+            right = kmer[1:]
+            self.add_edge(left, right)
+
+    def print_eulerian_walk(self):
+        ''' This function starts the recursive walk function
+        at the first node in the graph
+        
+        Args: None
+        
+        Returns:
+            tour (list): list of k-1 mers traversed by the algorithm
+        
+        Example:
+        >>> dbg = DeBruijnGraph("this this this is a test", 4)
+        >>> dbg.print_eulerian_walk(seed=1) #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+        ['thi', ...]
+        '''
+        tour = []
+        start = next(iter(self.graph))
+        self.eulerian_helper(start, tour)
+        return list(reversed(tour))
+
+    def eulerian_helper(self, left, tour):
+        '''Helper function for path construction - the function picks an edge from 'left' node to 'right' node and removes it, then recursively does this process over and over until all outgoing edges have been removed. This ensures that the correct Eulerian walk is produced when the reversed path is reversed back to being forward again
+        '''
+        while self.graph[left]:
+            right = self.graph[left][0]
+            self.remove_edge(left, right)
+            self.eulerian_helper(right, tour)
+        tour.append(left)
+```
+
+### Example usage
+
+```{python}
+graph = DeBruijnGraph("fool me once shame on shame on you fool me", 6)
+print(graph.eulerian_walk())
+walk = graph.print_eulerian_walk()
+sequence = walk[0] + "".join(x[-1] for x in walk[1:])
+print(walk)
+print(sequence)
+```
+
+```{python}
+''' Results:
+  None
+['fool ', 'ool m', 'ol me', 'l me ', ' me o', 'me on', 'e onc', ' once', 'once ', 'nce s', 'ce sh', 'e sha', ' sham', 'shame', 'hame ', 'ame o', 'me on', 'e on ', ' on s', 'on sh', 'n sha', ' sham', 'shame', 'hame ', 'ame o', 'me on', 'e on ', ' on y', 'on yo', 'n you', ' you ', 'you f', 'ou fo', 'u foo', ' fool', 'fool ', 'ool m', 'ol me']
+fool me once shame on shame on you fool me
+'''
+```
