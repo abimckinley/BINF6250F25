@@ -3,7 +3,6 @@ In this project, we filled out a de Bruijn graph class that reads a given string
 resequences the string in the appropriate order by traversing the de Bruijn graph through an Eulerian walk. 
 
 # Pseudocode
-Put pseudocode in this box:
 
 ```
 FUNCTION add_edge(left, right)
@@ -34,6 +33,43 @@ If left in graph:
         remove right from graph[left]
 ```
 ```
+FUNCTION dfs(left, visited):
+        Mark left as visited
+        For each neighbor right of left:
+            If right is not visited:
+                Call dfs(right, visited)
+```
+```
+FUNCTION is_connected():
+        Create dictionary visited with all nodes set to False
+        Find a node with at least one outgoing edge and set as start
+        If no such node exists:
+            Return True
+        Call dfs(start, visited)
+        For each node in graph:
+            If node has edges and is not visited:
+                Return False
+        Return True
+```
+```
+FUNCTION eulerian_walk():
+        If graph is not connected:
+            Return False
+        Initialize in_degree and out_degree for all nodes
+        For each node left:
+            Increase out_degree[left] by number of outgoing edges
+            For each neighbor right of left:
+                Increase in_degree[right]
+        Initialize start_nodes = 0, end_nodes = 0
+        For each node in set of all nodes:
+            If out_degree[node] - in_degree[node] == 1:
+                Increase start_nodes
+            Else if in_degree[node] - out_degree[node] == 1:
+                Increase end_nodes
+            Else if in_degree[node] != out_degree[node]:
+                Return True
+```
+```
 FUNCTION build_debruijn_graph(input_string, k)
 ''' This function builds a De Buijn graph from a string
         Args:
@@ -49,10 +85,33 @@ FUNCTION build_debruijn_graph(input_string, k)
 '''
 ```
 ```
-FUNCTION print_eulerian_walk()
+FUNCTION print_eulerian_walk():
+''' This function starts the recursive walk function
+        at the first node in the graph
+        
+        Args: None
+        
+        Returns:
+            tour (list): list of k-1 mers traversed by the algorithm
+        
+        Example:
+        >>> dbg = DeBruijnGraph("this this this is a test", 4)
+        >>> dbg.print_eulerian_walk(seed=1) #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+        ['thi', ...]
+        '''
+        Initialize tour as empty list
+        Choose start as any node in graph
+        Call print_eulerian_walk(start, tour)
+        Reverse tour
+        Return tour
 ```
 ```
-FUNCTION eulerian_walk()
+FUNCTION eulerian_helper(left, tour):
+        While left has outgoing edges:
+            right = first neighbor of left
+            Call remove_edge(left, right)
+            Call print_euerlian_walk(right, tour)
+        Append left to tour
 ```
 
 # Successes
