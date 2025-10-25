@@ -97,22 +97,61 @@ def BWT(string: str) -> str:
     pass
 ```
 
-function suffix_array(text)
-1.   Create a list of all suffixes of the text, each paired with its starting position 
-      a. (tuples) (start_pos suffix) (list of len+1 of (start_pos suffix))
-      b. start with (0 string$) ; then (1 tring$); then (2 ring$); then 
-      (3 ing); then (4 ng$) then (5 g$) then (6 $)
-2.  Sort these suffix-position pairs lexicographially by suffix into a new list/array
-3.  Extract just the starting positions from the sorted pairs; ident original position
-4.  return(list of sorted starting positions)
+
+### Generating BWT from Suffix Arrays
 
 ```{python}
-def suffix_array(sequence: str) -> list[int]:
+def format_text(text:str) -> str:
+  '''Function to create the correct format of string needed for suffix_arrays
+  
+  In order to process properly, suffix_array needs a string of the format stringEOS (string$)
+  If $string or string is sent to the function, we are just going to add or move the $;
+  otherwise, we will create an error message, and return a null string.
+  
+  Args:
+    text: text string to format/check format
+  
+  Returns:
+    properly formated string for suffix_arrays
+  '''
+  
+  confirm = text.split(EOS)   # check to see if string is of format banana or banana$
+  match len(confirm):
+    case 1:                      # no EOS marker in string
+      text += EOS
+    case 2:
+      if (confirm[0] == ""):      # EOS at beginning of string; move to end
+        text = text[1:] + EOS
+      elif (confirm[1] != ""):    # EOS not at end of string
+        print(f"format_text(): Invalid string {text}, should be string, $string or string$")
+        return("")
+    case _:                       # more than one EOS 
+      print(f"format_text(): Invalid string {text}, should be string, $string or string$")
+      return("")
+  return(text)
+
+def suffix_array(text: str) -> list[int]:
+  '''Function to calculate suffix-array for a given string.
+  
+  Computes the suffix array by sorting all suffixes of the input string
+  lexicographically and returning their starting positions.
+  
+  Args: 
+    text: The input string to process, of the format "string", "$string" or "string$", 
+              where $ is the end of string separator.  If it appears within the string, the
+              string will not be processed.
+  Returns:
+    list of integers:   Representing the the starting positions of the sorted suffixes
+  
+  '''
   sorted_positions = [] # initialize sorted_list to empty list
   suffix_list = [] # initialize suffix_list to empty list
-    
-  if (sequence[-1] != EOS):         # if no EOS on sequence, add it
-    sequence += EOS
+  
+
+  sequence = format_text(text) # put text in the correct format first with EOS at end of text
+  if not (sequence):
+      return("")               # error printed by format string already
+  
   length = len(sequence)
   
   for i in range(length):
@@ -138,80 +177,52 @@ print(f"{str3} sent to suffix_array found {list1}; should be [6, 5, 3, 1, 0, 4, 
 str4 = 'banana'
 list1 = suffix_array(str4)
 print(f"{str4} sent to suffix_array found {list1}; should be [6, 5, 3, 1, 0, 4, 2]")
-    
+str5 = '$banana'
+list5 = suffix_array(str5)
+print(f"{str5} sent to suffix_array found {list5}; should be [6, 5, 3, 1, 0, 4, 2]")
+str6 = 'goo$gol'
+list6 = suffix_array(str6)
+print(f"{str6} - should have generated error message, not in right format")
 ```
-###Generate a suffix array
     
-Once we have the suffix array, we can compute the BWT more efficiently:
+Once we have a suffix array, we can compute the BWT more efficiently:
 
-function BWT_from_suffix_array (text, suffix_positions (list of int?))
-1. Initialize on empty string of the same length as input text.
-2. for each position in the suffix positions list do
-3.    if the suffix starts that the beginning of the text then
-4.      Add the last character of the text to the transformed result
-5.    else
-6.      Add the character preceeding the suffix to the transformed result
-7. Return(the transformed result)
 
-Example:  BWT_from_suffix_array("banana$", [6, 5, 3, 1, 0, 4, 2])
-  transformed = string 7 char long
-  for i = 0 to 6 do
-    if text[0] == '$'
-      add last character of the text to the transformed result.
-    else
-      add the character preceeding the suffix to the transformed result
-      transformed[i] = 
-          or transformed[0] = 'a'
-             transformed[1] = 'n'
-             transformed[2] = 'n'
-             transformed[3] = 'b'
-             transformed[4] = '$' # Note that this is 0 -- I put in [6]
-             transformed[5] = 'a'
-             transformed[6] = 'a'
-             (answer should be:  'annb$aa' (check!))
-  return(transformed)
-  
 ```{python}
-def BWT_from_suffix_array(text_str: str, suffix_positions: list[int] ) -> str:
+def BWT_from_suffix_array(text: str, suffix_positions: list[int] ) -> str:
+  '''Function to calculate the Burrows-Wheeler Transform from a suffix array.
+  
+  Computes the Burrows-Wheeler Transform by using the suffix array to identify
+  the character that preceds each suffix in the sorted order.
+  
+  Args:
+      text: The input string to transform.
+      suffix_positions: The suffix array for the input string, containing the
+                        starting positions of all of the suffixes in lexicographical
+                        order.
+                        
+  Returns:
+      The Burrows-Wheeler Transform of the input string.
+      
     #Examples:
       #  >>> BWT_from_suffix_array("banana$", [6, 5, 3, 1, 0, 4, 2])
       #  'annb$aa'
         
        # >>> BWT_from_suffix_array("googol$", [6, 3, 0, 5, 2, 4, 1])
       #  'lo$oogg'
-    
-#PSEUDOCODE
-#function BWT_from_suffix_array (text, suffix_positions (list of int))
-#1. Initialize on empty string of the same length as input text.
-#2. for each position in the suffix positions list do
-#3.    if the suffix starts that the beginning of the text then
-#4.      Add the last character of the text to the transformed result
-#5.    else
-#6.      Add the character preceeding the suffix to the transformed result
-#7. Return(the transformed result)
+  '''  
 
-#Example:  BWT_from_suffix_array("banana$", [6, 5, 3, 1, 0, 4, 2])
-#             result should be annb$aa
-
+  text_str = format_text(text) # put text in the correct format first with EOS at end of text.
+  if not (text_str):
+      return("")               # error printed by format string already
+  
   length = len(text_str)
   
   transformed =[' ']*length    # initial list of size length with char 'space' in all
   
   for i in range(length):
-   #if text_str[i] == '$': 
-    #  transformed[i] = text_str[i-1] # ??????
-      # add last character of the text to the transformed result.
-   #else:
-      # add the character preceeding the suffix to the transformed result
       transformed[i] = text_str[suffix_positions[i]-1]
-        #  or transformed[0] = 'a'
-        #     transformed[1] = 'n'
-        #     transformed[2] = 'n'
-        #     transformed[3] = 'b'
-        #     transformed[4] = '$' # Note that this is 0 -- I put in [6]
-        #     transformed[5] = 'a'
-        #     transformed[6] = 'a'
-        #     (answer should be:  'annb$aa' (check!))
+       
   return("".join(transformed))
 
 # for Code Testing    DELETE BEFORE PROJECT IS DUE
@@ -229,7 +240,7 @@ suffix3 = suffix_array(str3)
 BWT3 = BWT_from_suffix_array(str3,suffix3)
 print(f"BWT_from_suffix_array {str3}, {suffix3}, {BWT3}, should be: banana$,[6, 5, 3, 1, 0, 4, 2],annb$aa")
 
-str4 = "$banana" # NEED TO FIX THIS TEST CASE!!!   8 item position list?  check what encoded result should be
+str4 = "$banana" # NEED TO FIX THIS TEST CASE!!! check what encoded result should be
 suffix4 = suffix_array(str4)
 BWT4 = BWT_from_suffix_array(str4,suffix4)
 print(f"BWT_from_suffix_array {str4}, {suffix4}, {BWT4}, should be: $banana, [6, 5, 3, 1, 0, 4, 2],annb$aa")
