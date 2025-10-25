@@ -14,8 +14,6 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=TRUE)
 library('reticulate')
-reticulate::conda_install(envname = "r-reticulate",
-                        conda="auto")
 ```
 
 # Imports & Global Variable
@@ -109,48 +107,40 @@ function suffix_array(text)
 4.  return(list of sorted starting positions)
 
 ```{python}
-def suffix_array(string: str) -> list[int]:
-    """Function to calculate suffix-array for a given string.
+def suffix_array(sequence: str) -> list[int]:
+  sorted_positions = [] # initialize sorted_list to empty list
+  suffix_list = [] # initialize suffix_list to empty list
     
-    Computes the suffix array by sorting all suffixes of the input string
-    lexicographically and returning their starting positions.
+  if (sequence[-1] != EOS):         # if no EOS on sequence, add it
+    sequence += EOS
+  length = len(sequence)
+  
+  for i in range(length):
+    suffix_list.append((sequence[i:],i)) #create list of suffixes paired with starting pos
     
-    Args:
-        string: The input string to process.
+  suffix_list.sort() # suffix list will now be sorted by first item in tuple - suffix
     
-    Returns:
-        A list of integers representing the starting positions of the
-        lexicographically sorted suffixes.
-        
-    Examples:                               sorted by suffix
-        >>> suffix_array('googol$')    
-                          $googol   0        
-                          l$googo   1       
-                          ol$goog   2       
-                          gol$goo   3        
-                          ogol$go   4        
-                          oogol$g   5   
-                          googol$.  6            
-                        Sorted by suffix:
-                          
-        [6, 3, 0, 5, 2, 4, 1].    mine [ 6 1 ]
-         
-        >>> suffix_array('banana$')        reasembled from below sorted.  
-                          banana$.  0       banana$               4           
-                          anana$b.  1       anana$                3
-                          nana$ba.  2       nana$                 5
-                          ana$ban.  3       ana$                  2
-                          na$bana.  4       na$                   5
-                          a$banan.  5       a$                    1
-                          $banana.  6.      $                     0
-        [6, 5, 3, 1, 0, 4, 2] ( if you looked up sorted to original list)
-                          
-    """
-    pass
+  for i in range(length):
+    sorted_positions.append(suffix_list[i][1]) # append original position in string to list
+    
+  return(sorted_positions)  
+      
+# Testing code.  DELETE THIS SECTION BEFORE PROJECT IS DUE
+str1 = "googol$"
+list1 = suffix_array(str1)
+print(f"{str1} sent to suffix_array found {list1}; should be [6, 3, 0, 5, 2, 4, 1]")
+str2 = "googol"
+list1 = suffix_array(str2)
+print(f"{str2} sent to suffix_array found {list1}; should be [6, 3, 0, 5, 2, 4, 1]")
+str3 = 'banana$'
+list1 = suffix_array(str3)
+print(f"{str3} sent to suffix_array found {list1}; should be [6, 5, 3, 1, 0, 4, 2]")
+str4 = 'banana'
+list1 = suffix_array(str4)
+print(f"{str4} sent to suffix_array found {list1}; should be [6, 5, 3, 1, 0, 4, 2]")
+    
 ```
-    
-    
-Generate a suffix array
+###Generate a suffix array
     
 Once we have the suffix array, we can compute the BWT more efficiently:
 
@@ -182,31 +172,68 @@ Example:  BWT_from_suffix_array("banana$", [6, 5, 3, 1, 0, 4, 2])
   return(transformed)
   
 ```{python}
-def BWT_from_suffix_array(
-  text: str, 
-  suffix_positions: list[int]
-  ) -> str:
-    """Function to calculate the Burrows-Wheeler Transform from a suffix array.
-    
-    Computes the Burrows-Wheeler Transform by using the suffix array to identify
-    the character that precedes each suffix in the sorted order.
-    
-    Args:
-        text: The input string to transform.
-        suffix_positions: The suffix array for the input string, containing the
-            starting positions of all suffixes in lexicographical order.
-    
-    Returns:
-        The Burrows-Wheeler Transform of the input string.
+def BWT_from_suffix_array(text_str: str, suffix_positions: list[int] ) -> str:
+    #Examples:
+      #  >>> BWT_from_suffix_array("banana$", [6, 5, 3, 1, 0, 4, 2])
+      #  'annb$aa'
         
-    Examples:
-        >>> BWT_from_suffix_array("banana$", [6, 5, 3, 1, 0, 4, 2])
-        'annb$aa'
-        
-        >>> BWT_from_suffix_array("googol$", [6, 3, 0, 5, 2, 4, 1])
-        'lo$oogg'
-    """
-    pass
+       # >>> BWT_from_suffix_array("googol$", [6, 3, 0, 5, 2, 4, 1])
+      #  'lo$oogg'
+    
+#PSEUDOCODE
+#function BWT_from_suffix_array (text, suffix_positions (list of int))
+#1. Initialize on empty string of the same length as input text.
+#2. for each position in the suffix positions list do
+#3.    if the suffix starts that the beginning of the text then
+#4.      Add the last character of the text to the transformed result
+#5.    else
+#6.      Add the character preceeding the suffix to the transformed result
+#7. Return(the transformed result)
+
+#Example:  BWT_from_suffix_array("banana$", [6, 5, 3, 1, 0, 4, 2])
+#             result should be annb$aa
+
+  length = len(text_str)
+  
+  transformed =[' ']*length    # initial list of size length with char 'space' in all
+  
+  for i in range(length):
+   #if text_str[i] == '$': 
+    #  transformed[i] = text_str[i-1] # ??????
+      # add last character of the text to the transformed result.
+   #else:
+      # add the character preceeding the suffix to the transformed result
+      transformed[i] = text_str[suffix_positions[i]-1]
+        #  or transformed[0] = 'a'
+        #     transformed[1] = 'n'
+        #     transformed[2] = 'n'
+        #     transformed[3] = 'b'
+        #     transformed[4] = '$' # Note that this is 0 -- I put in [6]
+        #     transformed[5] = 'a'
+        #     transformed[6] = 'a'
+        #     (answer should be:  'annb$aa' (check!))
+  return("".join(transformed))
+
+# for Code Testing    DELETE BEFORE PROJECT IS DUE
+str1 = "banana$"
+suffix1 = suffix_array(str1)
+BWT1 = BWT_from_suffix_array(str1, suffix1)
+print(f"BWT_from_suffix_array {str1}, {suffix1}, {BWT1}, should be: banana$,[6, 5, 3, 1, 0, 4, 2],annb$aa")
+str2 = "googol$"
+suffix2 = suffix_array(str2)
+BWT2 = BWT_from_suffix_array(str2,suffix2)
+print(f"BWT_from_suffix_array {str2}, {suffix2}, {BWT2}, should be: googol$, [6, 3, 0, 5, 2, 4, 1]), lo$oogg")
+
+str3 = "banana" # NEED TO FIX THIS TEST CASE!!!   no $ in BWT string????
+suffix3 = suffix_array(str3)
+BWT3 = BWT_from_suffix_array(str3,suffix3)
+print(f"BWT_from_suffix_array {str3}, {suffix3}, {BWT3}, should be: banana$,[6, 5, 3, 1, 0, 4, 2],annb$aa")
+
+str4 = "$banana" # NEED TO FIX THIS TEST CASE!!!   8 item position list?  check what encoded result should be
+suffix4 = suffix_array(str4)
+BWT4 = BWT_from_suffix_array(str4,suffix4)
+print(f"BWT_from_suffix_array {str4}, {suffix4}, {BWT4}, should be: $banana, [6, 5, 3, 1, 0, 4, 2],annb$aa")
+
 ```
 
 ## FM-Index for Pattern Matching
