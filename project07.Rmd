@@ -102,7 +102,7 @@ def BWT(string: str) -> str:
 
 ```{python}
 def format_text(text:str) -> str:
-  '''Function to create the correct format of string needed for suffix_arrays
+  '''Helper function to create the correct format of string needed for suffix_arrays
   
   In order to process properly, suffix_array needs a string of the format stringEOS (string$)
   If $string or string is sent to the function, we are just going to add or move the $;
@@ -309,22 +309,39 @@ Where for each character a in a bwt string, occur[a][i] contains the number of o
 With those two dictionaries, we can then start matching the query string to our reference string.
 
 Count Array
-The count array stores the number of characters lexicographically smaller than each character in the alphabet:
+The count array stores the number of characters lexicographically smaller than each character in the alphabet.
 
-function calculate_counts(transformed, alphabet)
-  Initialize a dictionary to track character counts create dict with alphabet as key
-  Initialize a result dictionary for cumulative counts create dict with alphabet as key
-  Set initial cumulative count to zero
-  for each character in the sorted alphabet do
-    Store the current cumulative count for this character
-    Increase the cumulative count by the frequencey of this character
-  return(the dictionary of cumulative counts)
-  
+
 ```{python}
 from collections import Counter
 
+def initialize_alphabet(string:str) -> dict[str, int]:
+  ''' Given a string of characters, this function will find the alphabet of the string,
+      and initialize a dictionary to the unique characters; initizing their dict.value to 0
+      
+  Args:
+      string: The string to be evaluated.
+      
+  Returns:
+      Dict of (char int) where char (string of one) is the key/alphabet of the string; 
+      and int will be set to 0s
+  '''
+  
+  alphabet = sorted(set(string))
+  return(dict.fromkeys(alphabet,0))
+
+#Testing for function DELETE BEFORE PROJECT IS DUE
+str1="AAACCGGGTTTA"
+dict1 = initialize_alphabet(str1)
+print(f"{str1} {dict1} ; dictionary should be of characters [A C G and T]")
+str2="this is my string"
+dict2 = initialize_alphabet(str2)
+print(f"{str2} {dict2} ; dictionary should contain [<space>, g, h, i, m, n, r, s, t, y]")
+```
+
+```{python}
 def cal_count(string: str) -> dict[str, int]:
-    """Function to count characters lexicographically smaller than each character.
+  """Function to count characters lexicographically smaller than each character.
     
     For each character in the alphabet, calculates how many characters in the
     input string are lexicographically smaller than it.
@@ -342,8 +359,29 @@ def cal_count(string: str) -> dict[str, int]:
         
         >>> cal_count('banana')
         {'a': 0, 'b': 3, 'n': 4}
-    """
-    pass
+  """
+  
+  if EOS in string:
+    print(f"cal_count(): Function needs a string without {EOS} in it, sent {string}")
+    return("")
+  
+  result_dict = initialize_alphabet(string) # returns a sorted, initialized alphabet from string
+  
+  cumulative_count = 0
+  for char in result_dict:
+    result_dict[char] = cumulative_count
+    cumulative_count += string.count(char)
+
+  return(result_dict)
+
+# Testing code.  DELETE ME before handing project in
+results1 = cal_count('ATGACG')
+print(f"ATGACG string has {results1}, should be ['A': 0, 'C': 2, 'G': 3, 'T': 5]")
+results2 = cal_count('banana')
+print(f"banana string has {results2}, should be ['a': 0, 'b': 3, 'n': 4]")
+results3 = cal_count('banana$')
+print(f"banana$ string should produce an error message and return <null>")
+        
 ```
 
 Occurrence Array
@@ -424,6 +462,8 @@ def update_range(
 ```
 
 function find_match(pattern (query),transformed,counts,occurrences, suffix_positions) 
+  check to make sure query string is less than reference string; 
+  Also check to make sure there are on EOS in either string.
   Initialize search range to cover the entire transformed text
   for each character in the 'pattern', processing from right to left do
     Update the search range based on the current character
@@ -432,9 +472,10 @@ function find_match(pattern (query),transformed,counts,occurrences, suffix_posit
     Collect all suffix positions within the final range
   return (list of matching positions)
 
+
 ```{python}
-def find_match(query: str, reference: str) -> list[int]: ##????  I'm comfused, why does pseudocode not match here????
-    """Function to find exact matching by applying Burrows-Wheeler Transform.
+def find_match(query: str, reference: str) -> list[int]:
+  """Function to find exact matching by applying Burrows-Wheeler Transform.
     
     Searches for all occurrences of the query string within the reference string
     using the Burrows-Wheeler Transform algorithm for efficient pattern matching.
@@ -454,7 +495,8 @@ def find_match(query: str, reference: str) -> list[int]: ##????  I'm comfused, w
         
         >>> find_match('xyz', 'banana')
         []
-    """
+  """
+
     pass
 ```
 
@@ -463,7 +505,7 @@ End-of-string character: Ensure your implementation includes a unique end-of-str
 
 Suggest global EOS = '$' to allow -- discussed and added.
 
-Indexing issues: Pay careful attention to zero-based versus one-based indexing, especially when implementing the BWT from suffix arrays.  ????
+Indexing issues: Pay careful attention to zero-based versus one-based indexing, especially when implementing the BWT from suffix arrays. 
 
 Edge cases: Handle edge cases properly, such as when the suffix array index is 0, or when dealing with empty strings or patterns.   ????
 
