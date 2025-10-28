@@ -117,16 +117,16 @@ function find_match(pattern (query),transformed,counts,occurrences, suffix_posit
 ```
 
 # Successes
-Description of the team's learning points
+We would consider this project a success as a whole, we spent most of the time just going over notes and the lecture to learn about Burrows - Wheeler Transforms.
 
 # Struggles
 Doing the individual pieces were pretty straightforward, but understanding "how" the algorithm was finding strings was the challenging part.
 
 # Personal Reflections
-## Group Leader
-Group leader's reflection on the project
+## Group Leader - Abi
+I really enjoyed this project; the programming was fairly easy, and learning about the algorithm behind the scenes was fun. I think that Jacque and I communicated well about the project, and were able to complete things in a very timely manner. Personally, I very much like learning about the algorithms behind the projects we do, and for this project, that was the majority of the work. 
 
-## Other member Jacque Caldwell
+## Other member - Jacque Caldwell
 This was a pretty straight forward implementation, I worked well with Abby and had a good time programming my parts of the project.  Not much to say this time.  github mostly behaved itself.
 
 Did learn more about strings in Python, including using the function 'set' to find a list of unique characters in a string.
