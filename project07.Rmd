@@ -209,11 +209,6 @@ def cal_count(string: str) -> dict[str, int]:
         >>> cal_count('banana')
         {'a': 0, 'b': 3, 'n': 4}
   """
-  
-  if EOS in string:
-    print(f"cal_count(): Function needs a string without {EOS} in it, sent {string}")
-    return("")
-  
   result_dict = initialize_alphabet(string) # returns a sorted, initialized alphabet from string
   
   cumulative_count = 0
@@ -260,6 +255,7 @@ def update_range(lower: int, upper: int, count: dict[str, int],
 def find_match(query: str, reference: str) -> list[int]:
 
     suffix_pos = suffix_array(reference)
+    
     bwt_str = BWT_from_suffix_array(reference, suffix_pos)
     # creates suffix array and corresponding BWT for text
 
@@ -309,6 +305,16 @@ if __name__ == "__main__":
     print(f"find_match('ATGC', 'GTCGATGCGTCAGATGCCTAGATGC') = {find_match('ATGC', 'GTCGATGCGTCAGATGCCTAGATGC')} (expected: [4, 13, 21])")
     print(f"find_match('xyz', 'banana') = {find_match('xyz', 'banana')} (expected: [])")
 
+```
+```{python}
+
+#from my_read_fasta import read_fasta
+#my_dict = read_fasta("borrelia.fasta") # 6000+bp of borrelia genome
+#seq = my_dict['sequence']
+#print(find_match('ACTCCGGTCCTCTCGTACTAGGAGCAGGCTCCGTCAAGTATCCAACGCCCACGGCAGATAGGGACCAAAC',seq))
+# should get 770
+#print(find_match('',seq))
+# should get [395, 488, 552, 820, 1232, 1531, 1743, 1829, 2020, 2127, 2904, 2958, 3106, 3747, 3877, 4035, 4141, 5255]
 ```
 
 ```{python}
