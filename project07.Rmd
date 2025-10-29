@@ -1,5 +1,5 @@
 ---
-title: "Project 06: Hierarchical Clustering"
+title: "Project 07: BWT"
 author: "Abigail McKinley, Jacqueline Caldwell"
 date: "`r format(Sys.time(), '%Y%m%d')`"
 output:
